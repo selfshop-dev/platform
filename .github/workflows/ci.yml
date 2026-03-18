@@ -44,13 +44,19 @@ jobs:
           go-version-file: go.mod
           cache: true
 
+      - name: Install tools
+        run: go install github.com/golang/mock/mockgen
+
+      - name: Generate
+        run: go generate ./...
+
       - name: Run tests with coverage
         run: |
           go test -v -race -coverprofile=coverage.out -covermode=atomic \
             $(go list ${{ inputs.test-paths }} | grep -v -E '/(vendor|cmd|testdata|mocks)/')
 
       - name: Strip generated files from coverage
-        run: sed -i -E '/[_.]mock\.go:|\.pb\.go:|\.gen\.go:/d' coverage.out || true
+        run: sed -i -E '/[_.]mock\.go:|\.pb\.go:|\.gen\.go:|\.sql\.go:/d' coverage.out || true
 
       - name: Generate human-readable coverage report
         run: go tool cover -func=coverage.out | tee coverage.humanize | tail -1
