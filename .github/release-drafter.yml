@@ -1,29 +1,31 @@
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
 
+
 categories:
   - title: '💥 Breaking Changes'
     labels: [ '💥 Breaking Change' ]
 
   - title: '✨ Features'
     labels: [ '✨ Feature' ]
-    exclude-labels: [ '💥 Breaking Change', 'skip-changelog' ]
+    exclude-labels: [ '💥 Breaking Change' ]
 
   - title: '🐛 Bug Fixes'
     labels: [ '🐛 Bug' ]
-    exclude-labels: [ '💥 Breaking Change', '✨ Feature', 'skip-changelog' ]
+    exclude-labels: [ '💥 Breaking Change', '✨ Feature' ]
 
   - title: '🛡️ CI / Workflows'
     labels: [ '🛡️ CI / Workflows' ]
-    exclude-labels: [ '💥 Breaking Change', '✨ Feature', '🐛 Bug', 'skip-changelog' ]
+    exclude-labels: [ '💥 Breaking Change', '✨ Feature', '🐛 Bug' ]
 
   - title: '🧹 Other Changes'
     labels: [ '🧹 Chore', '📚 Documentation' ]
-    exclude-labels: [ '💥 Breaking Change', '✨ Feature', '🐛 Bug', '🛡️ CI / Workflows', 'skip-changelog' ]
+    exclude-labels: [ '💥 Breaking Change', '✨ Feature', '🐛 Bug', '🛡️ CI / Workflows' ]
 
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
 
+exclude-labels: [ 'skip-changelog' ]
 exclude-contributors:
   - dependabot
   - dependabot[bot]
