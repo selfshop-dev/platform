@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  release:
+    types: [ published ]
+
+permissions:
+  contents: write
+
+jobs:
+  update-floating-tags:
+    name: Update floating tags
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update floating tags
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const tag = context.ref.replace('refs/tags/', '')
+            const parts = tag.match(/^v(\d+)\.(\d+)\.(\d+)$/)
+
+            if (!parts) {
+              console.log(`⏭️ Skipping non-semver tag: ${tag}`)
+              return
+            }
+
+            const [, major, minor] = parts
+            const sha = context.sha
+            const floating = [`v${major}`, `v${major}.${minor}`]
+
+            for (const floatTag of floating) {
+              try {
+                await github.rest.git.deleteRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `tags/${floatTag}`,
+                })
+                console.log(`🗑️ Deleted existing tag: ${floatTag}`)
+              } catch {
+                console.log(`ℹ️ Tag ${floatTag} does not exist yet`)
+              }
+
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${floatTag}`,
+                sha,
+              })
+
+              console.log(`✅ ${floatTag} → ${tag} (${sha.slice(0, 7)})`)
+            }
