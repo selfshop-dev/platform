@@ -1,0 +1,28 @@
+name: Labeler
+
+on:
+  workflow_call:
+  issue_comment:
+    types: [ created, edited ]
+  issues:
+    types: [ opened, edited ]
+  pull_request_target:
+    types: [ opened, reopened, synchronize, edited ]
+    branches: [ main ]
+
+permissions:
+  contents: read
+  statuses: write
+  issues: write
+  checks: write
+  pull-requests: write
+
+jobs:
+  label-pull-request:
+    name: Labeler
+    runs-on: ubuntu-latest
+    steps:
+      - uses: fuxingloh/multi-labeler@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          config-path: .github/labeler.yml
