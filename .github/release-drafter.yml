@@ -1,0 +1,51 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+categories:
+  - title: '💥 Breaking Changes'
+    labels: ['💥 Breaking Change']
+
+  - title: '✨ Features'
+    labels: ['✨ Feature']
+    exclude-labels: ['💥 Breaking Change']
+
+  - title: '🐛 Bug Fixes'
+    labels: ['🐛 Bug']
+    exclude-labels: ['💥 Breaking Change', '✨ Feature']
+
+  - title: '🛡️ CI / Workflows'
+    labels: ['🛡️ CI / Workflows']
+    exclude-labels: ['💥 Breaking Change', '✨ Feature', '🐛 Bug']
+
+  - title: '🧹 Other Changes'
+    labels: ['🧹 Chore', '📚 Documentation']
+    exclude-labels: ['💥 Breaking Change', '✨ Feature', '🐛 Bug', '🛡️ CI / Workflows']
+
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-title-escapes: '\<*_&'
+
+exclude-contributors:
+  - dependabot
+  - dependabot[bot]
+
+version-resolver:
+  major:
+    labels: ['💥 Breaking Change']
+  minor:
+    labels: ['✨ Feature']
+  patch:
+    labels:
+      - '🐛 Bug'
+      - '🛡️ CI / Workflows'
+      - '📚 Documentation'
+      - '🧹 Chore'
+  default: patch
+
+template: |
+  $CHANGES
+
+  ## 🔗 Links
+
+  > Нашли баг или есть предложение? Открывайте [issue](https://github.com/$OWNER/$REPOSITORY/issues/new/choose) или присоединяйтесь к [discussions](https://github.com/orgs/selfshop-dev/discussions).
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
