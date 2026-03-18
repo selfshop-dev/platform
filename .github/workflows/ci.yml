@@ -53,7 +53,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           go test -v -race -coverprofile=coverage.out -covermode=atomic \
-            $(go list ${{ inputs.test-paths }} | grep -v -E '/(vendor|cmd|testdata|mocks)/')
+            $(go list ${{ inputs.test-paths }} | grep -v -E '/(vendor|gen|cmd|testdata|mocks)/')
 
       - name: Strip generated files from coverage
         run: sed -i -E '/[_.]mock\.go:|\.pb\.go:|\.gen\.go:|\.sql\.go:/d' coverage.out || true
