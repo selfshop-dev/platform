@@ -2,8 +2,7 @@
 
 ### Соглашение по коммитам
 
-Проект следует [`Conventional Commits`](https://www.conventionalcommits.org).  
-Формат: `<type>: <summary>`, где `summary` — повелительное наклонение,английский язык, без точки в конце.
+Проект следует [`Conventional Commits`](https://www.conventionalcommits.org). Формат: `<type>: <summary>`, где `summary` — повелительное наклонение,английский язык, без точки в конце.
 
 | Тип | Когда использовать |
 |---|---|
@@ -18,7 +17,9 @@
 | `chore` | Рутинные задачи, не попадающие в другие типы |
 
 Тип коммита автоматически определяет метку PR и тип следующего релиза:  
-`feat` → minor, `fix` / `perf` / `refactor` → patch, `feat!` / `fix!` (breaking change) → major.
+`feat!` / `fix!` (breaking change) → major.
+`feat` → minor,
+`fix` / `perf` / `refactor` → patch,
 
 ## Требования к коду
 
@@ -26,10 +27,5 @@
 
 ## Issues и уязвимости
 
-- Общие вопросы и баги — через [`шаблоны issues`](../../issues/new/choose).  
-- **Уязвимости** — **только** через [`🔒 Private Vulnerability Reporting`](../../security/advisories/new).  
-  Не создавай публичный issue или discussion!
-
----
-
-**Спасибо, что помогаешь делать проект лучше!** ❤️
+- Общие вопросы и баги — через [`шаблоны issues`](../../issues/new/choose).
+- **Уязвимости** — **только** через [`🔒 Private Vulnerability Reporting`](../../security/advisories/new). Не создавай публичный issue или discussion!
