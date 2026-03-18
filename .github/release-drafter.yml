@@ -3,23 +3,23 @@ tag-template: 'v$RESOLVED_VERSION'
 
 categories:
   - title: '💥 Breaking Changes'
-    labels: ['💥 Breaking Change']
+    labels: [ '💥 Breaking Change' ]
 
   - title: '✨ Features'
-    labels: ['✨ Feature']
-    exclude-labels: ['💥 Breaking Change']
+    labels: [ '✨ Feature' ]
+    exclude-labels: [ '💥 Breaking Change', 'skip-changelog' ]
 
   - title: '🐛 Bug Fixes'
-    labels: ['🐛 Bug']
-    exclude-labels: ['💥 Breaking Change', '✨ Feature']
+    labels: [ '🐛 Bug' ]
+    exclude-labels: [ '💥 Breaking Change', '✨ Feature', 'skip-changelog' ]
 
   - title: '🛡️ CI / Workflows'
-    labels: ['🛡️ CI / Workflows']
-    exclude-labels: ['💥 Breaking Change', '✨ Feature', '🐛 Bug']
+    labels: [ '🛡️ CI / Workflows' ]
+    exclude-labels: [ '💥 Breaking Change', '✨ Feature', '🐛 Bug', 'skip-changelog' ]
 
   - title: '🧹 Other Changes'
-    labels: ['🧹 Chore', '📚 Documentation']
-    exclude-labels: ['💥 Breaking Change', '✨ Feature', '🐛 Bug', '🛡️ CI / Workflows']
+    labels: [ '🧹 Chore', '📚 Documentation' ]
+    exclude-labels: [ '💥 Breaking Change', '✨ Feature', '🐛 Bug', '🛡️ CI / Workflows', 'skip-changelog' ]
 
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
@@ -30,9 +30,9 @@ exclude-contributors:
 
 version-resolver:
   major:
-    labels: ['💥 Breaking Change']
+    labels: [ '💥 Breaking Change' ]
   minor:
-    labels: ['✨ Feature']
+    labels: [ '✨ Feature' ]
   patch:
     labels:
       - '🐛 Bug'

@@ -7,7 +7,7 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels: [ '🛡️ CI / Workflows' ]
+    labels: [ '🛡️ CI / Workflows', 'skip-changelog' ]
     commit-message:
       prefix: "ci"
     open-pull-requests-limit: 5
