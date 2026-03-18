@@ -1,7 +1,7 @@
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
 
-
+category-template: '### $TITLE'
 categories:
   - title: '💥 Breaking Changes'
     labels: [ '💥 Breaking Change' ]
