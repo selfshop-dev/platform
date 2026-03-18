@@ -1,0 +1,69 @@
+version: v1
+
+labels:
+  - label: '💥 Breaking Change'
+    sync: true
+    matcher:
+      title: '^[a-z]+(\(.+\))?!:.*'
+
+  - label: '✨ Feature'
+    sync: true
+    matcher:
+      title: '^feat(\(.+\))?!?:.*'
+
+  - label: '🐛 Bug'
+    sync: true
+    matcher:
+      title: '^fix(\(.+\))?!?:.*'
+
+  - label: '🛡️ CI / Workflows'
+    sync: true
+    matcher:
+      title: '^(ci|build)(\(.+\))?!?:.*'
+
+  - label: '📚 Documentation'
+    sync: true
+    matcher:
+      title: '^docs(\(.+\))?!?:.*'
+
+  - label: '🧹 Chore'
+    sync: true
+    matcher:
+      title: '^(chore|refactor|perf|style|test)(\(.+\))?!?:.*'
+
+  - label: 'size: s'
+    sync: true
+    matcher:
+      files:
+        count:
+          gte: 1
+          lte: 5
+
+  - label: 'size: m'
+    sync: true
+    matcher:
+      files:
+        count:
+          gte: 6
+          lte: 15
+
+  - label: 'size: l'
+    sync: true
+    matcher:
+      files:
+        count:
+          gte: 16
+
+checks:
+  - context: 'Semantic PR'
+    url: 'https://www.conventionalcommits.org'
+    description:
+      success: 'Conventional commit prefix найден.'
+      failure: 'Добавь conventional commit prefix: feat:, fix:, ci:, docs:, chore: и т.д.'
+    labels:
+      any:
+        - '✨ Feature'
+        - '🐛 Bug'
+        - '🛡️ CI / Workflows'
+        - '📚 Documentation'
+        - '🧹 Chore'
