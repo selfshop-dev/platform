@@ -42,6 +42,7 @@ jobs:
         uses: golangci/golangci-lint-action@v9
         with:
           args: --verbose
+          skip-cache: true
 
   test:
     name: Test
