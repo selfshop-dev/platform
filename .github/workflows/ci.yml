@@ -35,6 +35,9 @@ jobs:
         # the linter typechecks the entire package including generated code.
         run: go generate ./...
 
+      - name: Clear Go build cache
+        run: go clean -cache
+
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
