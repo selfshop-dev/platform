@@ -35,8 +35,11 @@ jobs:
         # the linter typechecks the entire package including generated code.
         run: go generate ./...
 
-      - name: Clear Go build cache
-        run: go clean -cache
+      - name: Clear all Go caches
+        # Clears build (GOCACHE), module (GOMODCACHE), and test (GOTESTCACHE)
+        # caches to prevent stale generated files from being picked up by the
+        # linter's typecheck pass.
+        run: go clean -cache -modcache -testcache
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v9
@@ -59,14 +62,13 @@ jobs:
           cache: true
 
       - name: Install tools
-        # go tool reads the `tool` directive in go.mod and installs at the pinned version.
-        # Running it explicitly before Generate keeps download time visible and separate.
         run: go tool mockgen -version
 
       - name: Generate
-        # Runs all //go:generate directives, producing mocks and other derived
-        # files. Must run before tests — generated files are not committed.
         run: go generate ./...
+
+      - name: Clear all Go caches
+        run: go clean -cache -modcache -testcache
 
       - name: Run tests with coverage
         # Excludes directories that either contain no tests or should not
