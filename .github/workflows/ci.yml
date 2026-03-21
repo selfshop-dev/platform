@@ -109,6 +109,7 @@ jobs:
           flags: unittests
           files: coverage.out
           fail_ci_if_error: true
+          disable_search: true
 
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v7
