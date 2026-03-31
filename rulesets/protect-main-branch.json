@@ -1,0 +1,95 @@
+{
+  "name": "protect-main-branch",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "refs/heads/main"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "required_linear_history"
+    },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "required_approving_review_count": 0,
+        "dismiss_stale_reviews_on_push": false,
+        "required_reviewers": [],
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_review_thread_resolution": true,
+        "allowed_merge_methods": [
+          "squash",
+          "rebase"
+        ]
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": true,
+        "do_not_enforce_on_create": false,
+        "required_status_checks": [
+          {
+            "context": "ci / Lint",
+            "integration_id": 15368
+          },
+          {
+            "context": "ci / Test",
+            "integration_id": 15368
+          },
+          {
+            "context": "security / Trivy vulnerability scan",
+            "integration_id": 15368
+          },
+          {
+            "context": "codeql / Analyze (go)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Trivy",
+            "integration_id": 57789
+          },
+          {
+            "context": "CodeQL",
+            "integration_id": 57789
+          }
+        ]
+      }
+    },
+    {
+      "type": "code_scanning",
+      "parameters": {
+        "code_scanning_tools": [
+          {
+            "tool": "CodeQL",
+            "security_alerts_threshold": "medium_or_higher",
+            "alerts_threshold": "errors_and_warnings"
+          },
+          {
+            "tool": "Trivy",
+            "security_alerts_threshold": "medium_or_higher",
+            "alerts_threshold": "errors_and_warnings"
+          }
+        ]
+      }
+    },
+    {
+      "type": "code_quality",
+      "parameters": {
+        "severity": "warnings"
+      }
+    }
+  ]
+}
