@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  workflow_call:
+    inputs:
+      test-paths:
+        type: string
+        default: ./...
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install tools
+        # go tool reads the `tool` directive in go.mod and installs at the pinned version.
+        # Required before Generate — mockgen must exist before go generate runs.
+        run: go tool mockgen -version
+
+      - name: Generate
+        # Mocks and other derived files must exist before linting —
+        # the linter typechecks the entire package including generated code.
+        run: go generate ./...
+
+      - name: Clear all Go caches
+        # Clears build (GOCACHE), module (GOMODCACHE), and test (GOTESTCACHE)
+        # caches to prevent stale generated files from being picked up by the
+        # linter's typecheck pass.
+        run: go clean -cache -modcache -testcache
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          args: --verbose
+          skip-cache: true
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: [ lint ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install tools
+        run: go tool mockgen -version
+
+      - name: Generate
+        run: go generate ./...
+
+      - name: Clear all Go caches
+        run: go clean -cache -modcache -testcache
+
+      - name: Run tests with coverage
+        # Excludes directories that either contain no tests or should not
+        # contribute to coverage:
+        #   vendor/   — third-party code
+        #   cmd/      — entry points, covered by integration tests
+        #   testdata/ — fixtures, not executable packages
+        #   mocks/    — generated test doubles
+        #   gen/      — all codegen output (sqlc, oapi-codegen, protoc, etc.)
+        run: |
+          go test -v -race \
+            -coverprofile=coverage.out \
+            -covermode=atomic \
+            $(go list ${{ inputs.test-paths }} | grep -v -E '/(vendor|cmd|testdata|mocks|gen)/')
+
+      - name: Strip generated files from coverage
+        # Second filter layer: removes generated files that share a package with
+        # hand-written code and therefore pass the grep above. Mirrors the
+        # exclusion pattern in .golangci.yml exactly. Trailing : is required —
+        # coverage.out format is "path/file.go:line.col,line.col ...".
+        #   /gen/     → sqlc, oapi-codegen, protoc output directories
+        #   _mock.go  → mockgen (*_mock.go suffix is the only allowed convention)
+        #   .pb.go    → protobuf
+        #   .pb.gw.go → grpc-gateway
+        #   .sql.go   → sqlc files outside gen/ (edge cases)
+        #   .gen.go   → oapi-codegen files outside gen/ (edge cases)
+        run: sed -i -E '/\/gen\/|_mock\.go:|\.pb(\.gw)?\.go:|\.sql\.go:|\.gen\.go:/d' coverage.out || true
+
+      - name: Generate human-readable coverage report
+        # Writes per-function breakdown to coverage.humanize and prints the
+        # total line to the step log for a quick CI summary.
+        run: go tool cover -func=coverage.out | tee coverage.humanize | tail -1
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unittests
+          files: coverage.out
+          fail_ci_if_error: true
+          disable_search: true
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          retention-days: 30
+          path: |
+            coverage.out
+            coverage.humanize
