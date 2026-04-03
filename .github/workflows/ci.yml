@@ -25,11 +25,6 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Install tools
-        # go tool reads the `tool` directive in go.mod and installs at the pinned version.
-        # Required before Generate — mockgen must exist before go generate runs.
-        run: go tool mockgen -version
-
       - name: Generate
         # Mocks and other derived files must exist before linting —
         # the linter typechecks the entire package including generated code.
@@ -60,9 +55,6 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
-
-      - name: Install tools
-        run: go tool mockgen -version
 
       - name: Generate
         run: go generate ./...
