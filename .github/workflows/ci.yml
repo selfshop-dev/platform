@@ -70,11 +70,15 @@ jobs:
         #   testdata/ — fixtures, not executable packages
         #   mocks/    — generated test doubles
         #   gen/      — all codegen output (sqlc, oapi-codegen, protoc, etc.)
+        #
+        # (/|$) matches both intermediate segments (mocks/sub) and terminal
+        # segments (path/mocks) — without the trailing $ a package whose path
+        # ends with the directory name would not be excluded.
         run: |
           go test -v -race \
             -coverprofile=coverage.out \
             -covermode=atomic \
-            $(go list ${{ inputs.test-paths }} | grep -v -E '/(vendor|cmd|testdata|mocks|gen)/')
+            $(go list ${{ inputs.test-paths }} | grep -v -E '/(vendor|cmd|testdata|mocks|gen)(/|$)')
 
       - name: Strip generated files from coverage
         # Second filter layer: removes generated files that share a package with
