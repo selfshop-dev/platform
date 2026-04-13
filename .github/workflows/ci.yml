@@ -25,6 +25,15 @@ jobs:
           go-version-file: go.mod
           cache: true
 
+      - name: Install tools
+        # Skip tool installation if no tools are declared in go.mod
+        run: |
+          if grep -q "^tool" go.mod; then
+            go install tool
+          else
+            echo "No tools defined in go.mod, skipping"
+          fi
+
       - name: Generate
         # Mocks and other derived files must exist before linting —
         # the linter typechecks the entire package including generated code.
@@ -55,6 +64,14 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+
+      - name: Install tools
+        run: |
+          if grep -q "^tool" go.mod; then
+            go install tool
+          else
+            echo "No tools defined in go.mod, skipping"
+          fi
 
       - name: Generate
         run: go generate ./...
