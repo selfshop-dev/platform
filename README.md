@@ -1,44 +1,38 @@
 # platform
-
-Централизованная CI/CD-платформа организации [`selfshop-dev`](https://github.com/selfshop-dev). Содержит пере используемые workflows и rulesets для защиты веток.
+Centralized CI/CD platform for the [`selfshop-dev`](https://github.com/selfshop-dev) organization. Contains reusable workflows and rulesets for branch protection.
 
 ## Rulesets
+Ready-to-use rulesets for new repositories are stored in [`rulesets/`](rulesets/).
 
-Готовые rulesets для новых репозиториев хранятся в [`rulesets/`](rulesets/).
-
-| Ruleset | Ветка | Назначение |
+| Ruleset | Branch | Purpose |
 |---|---|---|
-| [`protect-main-branch`](rulesets/protect-main-branch.json) | `main` | Полная защита: CI + Security + CodeQL + Trivy |
-| [`protect-main-branch-minimal`](rulesets/protect-main-branch-minimal.json) | `main` | Минимальная защита: только PR + линейная история, без CI чеков |
+| [`protect-main-branch`](rulesets/protect-main-branch.json) | `main` | Full protection: CI + Security + CodeQL + Trivy |
+| [`protect-main-branch-minimal`](rulesets/protect-main-branch-minimal.json) | `main` | Minimal protection: PR only + linear history, no CI checks |
 
-### Сравнение правил
-
-| Правило | `protect-main-branch` | `protect-main-branch-minimal` |
+### Rule Comparison
+| Rule | `protect-main-branch` | `protect-main-branch-minimal` |
 |---|---|---|
-| Запрет удаления | ✅ | ✅ |
-| Запрет force push | ✅ | ✅ |
-| Линейная история | ✅ | ✅ |
-| Обязательный PR | ✅ | ✅ |
+| Deletion prevention | ✅ | ✅ |
+| Force push prevention | ✅ | ✅ |
+| Linear history | ✅ | ✅ |
+| Required PR | ✅ | ✅ |
 | Thread resolution | ✅ | ✅ |
 | Lint + Test | ✅ | ❌ |
 | CodeQL | ✅ | ❌ |
 | Trivy | ✅ | ❌ |
 | Strict status checks | ✅ | ❌ |
-| Разрешённые методы merge | squash, rebase | squash, rebase |
+| Allowed merge methods | squash, rebase | squash, rebase |
 
-**Применить к новому репозиторию:**
-
+**Apply to a new repository:**
 ```bash
 gh api repos/selfshop-dev/REPO-NAME/rulesets \
   --method POST \
   --input <(curl -s https://raw.githubusercontent.com/selfshop-dev/platform/main/rulesets/protect-main-branch.json)
 ```
-
-> Заменить `REPO-NAME` на имя репозитория.
+> Replace `REPO-NAME` with the repository name.
 
 ## Reusable Workflows
-
-Все workflows используются через Platform Engineering подход — один источник правды для всей организации.
+All workflows follow a Platform Engineering approach — a single source of truth for the entire organization.
 
 ```yaml
 jobs:
@@ -47,20 +41,18 @@ jobs:
     secrets: inherit
 ```
 
-### Версионирование
+### Versioning
+Workflows are versioned via Git tags using the `vMAJOR.MINOR.PATCH` scheme with floating major tags.
 
-Workflows версионируются через Git tags по схеме `vMAJOR.MINOR.PATCH` с floating major tags.
-
-| Tag | Поведение |
+| Tag | Behavior |
 |---|---|
-| `@v1` | Floating tag — получает все патчи и минорные обновления автоматически |
-| `@v1.2.3` | Точная версия — никогда не меняется |
-| `@main` | Нестабильный — не использовать в сервисных репо |
+| `@v1` | Floating tag — automatically receives all patches and minor updates |
+| `@v1.2.3` | Exact version — never changes |
+| `@main` | Unstable — do not use in service repositories |
 
-Breaking change в workflow → новый major tag (`v2`). Всё остальное — patch/minor под тем же `v1`.
+A breaking change in a workflow triggers a new major tag (`v2`). Everything else is a patch/minor update under the same `v1`.
 
-Floating tags (`v1`, `v1.2`) обновляются автоматически при публикации релиза через [`update-floating-tags.yml`](.github/workflows/update-floating-tags.yml).
+Floating tags (`v1`, `v1.2`) are updated automatically on release via [`update-floating-tags.yml`](.github/workflows/update-floating-tags.yml).
 
-## Лицензия
-
+## License
 [`MIT`](LICENSE) © 2026-present [`selfshop-dev`](https://github.com/selfshop-dev)
